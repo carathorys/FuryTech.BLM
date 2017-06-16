@@ -33,7 +33,8 @@ namespace BLM.EF7.Tests
         public async Task Add()
         {
             await _add();
-            Assert.AreEqual(2, _repo.Entities(_identity).Count());
+            var entities = await _repo.EntitiesAsync(_identity);
+            Assert.AreEqual(2, entities.ToList().Count);
         }
 
         [TestMethod]
