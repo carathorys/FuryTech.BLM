@@ -42,7 +42,7 @@ namespace BLM.NetStandard
         {
             lock (_loadingTypes)
             {
-                var x = System.Runtime.Loader.AssemblyLoadContext.Default;
+                
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
                 _loadedTypes = new List<Type>();
                 foreach (var assembly in assemblies)
