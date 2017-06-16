@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
@@ -14,11 +14,13 @@
     <Company>FuryTechs</Company>
     <Product>FuryTechs.BLM.EF7</Product>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>2.0.0-preview</Version>
+    <Description>FuryTechs Business Layer Management tools for EntityFrameworkCore 2.x.x and NetStandard 2.0</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FuryTechs.BLM.NetStandard" Version="1.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+    <PackageReference Include="FuryTechs.BLM.NetStandard" Version="2.0.0-preview" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0-preview1-final" />
   </ItemGroup>
 
 </Project>
