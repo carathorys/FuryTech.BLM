@@ -2,7 +2,7 @@
 
 namespace BLM.NetStandard.Interfaces.Interpret
 {
-    internal interface IInterpretBeforeCreate : IBlmEntry
+    public interface IInterpretBeforeCreate : IBlmEntry
     {
         /// <summary>
         /// Possibility to interpret an entity on creation before saving into the DB
@@ -13,7 +13,7 @@ namespace BLM.NetStandard.Interfaces.Interpret
         object DoInterpret(object entity, IContextInfo context);
     }
 
-    internal interface IInterpretBeforeCreate<in TInput, out TOutput> : IInterpretBeforeCreate
+    public interface IInterpretBeforeCreate<in TInput, out TOutput> : IInterpretBeforeCreate
     {
         /// <summary>
         /// Possibility to interpret an entity on creation before saving into the DB

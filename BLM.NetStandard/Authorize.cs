@@ -37,7 +37,7 @@ namespace BLM.NetStandard
             return CollectionAsync(entities, context).Result;
         }
 
-        public static async Task<System.Collections.Generic.IEnumerable<AuthorizationResult>> CreateAsync<T>(T entity, IContextInfo context)
+        public static async Task<IEnumerable<AuthorizationResult>> CreateAsync<T>(T entity, IContextInfo context)
         {
             var createAuthorizers = Loader.GetEntriesFor<IAuthorizeCreate<T>>();
             System.Collections.Generic.List<AuthorizationResult> results = new System.Collections.Generic.List<AuthorizationResult>();
@@ -49,7 +49,7 @@ namespace BLM.NetStandard
             return results;
         }
 
-        public static async Task<System.Collections.Generic.IEnumerable<AuthorizationResult>> ModifyAsync<T>(T originalEntity, T modifiedEntity, IContextInfo context)
+        public static async Task<IEnumerable<AuthorizationResult>> ModifyAsync<T>(T originalEntity, T modifiedEntity, IContextInfo context)
         {
 
             var modifyAuthorizers = Loader.GetEntriesFor<IAuthorizeModify<T>>();
@@ -63,7 +63,7 @@ namespace BLM.NetStandard
             return results;
         }
 
-        public static async Task<System.Collections.Generic.IEnumerable<AuthorizationResult>> RemoveAsync<T>(T entity, IContextInfo context)
+        public static async Task<IEnumerable<AuthorizationResult>> RemoveAsync<T>(T entity, IContextInfo context)
         {
             var removeAuthorizers = Loader.GetEntriesFor<IAuthorizeRemove<T>>();
 

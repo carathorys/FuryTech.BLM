@@ -18,9 +18,10 @@ namespace BLM.NetStandard.Interfaces
 
     }
 
-    public interface IRepository<in TInput, out TOutput> : IDisposable, IRepository where TInput : class where TOutput: class
+    public interface IRepository<in TInput, TOutput> : IDisposable, IRepository where TInput : class where TOutput : class
     {
         IQueryable<TOutput> Entities(IIdentity user);
+        Task<IQueryable<TOutput>> EntitiesAsync(IIdentity user);
         void Add(IIdentity user, TInput newItem);
         Task AddAsync(IIdentity user, TInput newItem);
         void AddRange(IIdentity user, IEnumerable<TInput> newItems);
@@ -29,7 +30,7 @@ namespace BLM.NetStandard.Interfaces
         Task RemoveAsync(IIdentity usr, TInput item);
         void RemoveRange(IIdentity usr, IEnumerable<TInput> items);
         Task RemoveRangeAsync(IIdentity usr, IEnumerable<TInput> items);
-        IRepository<T2> GetChildRepositoryFor<T2>() where T2: class;
+        IRepository<T2> GetChildRepositoryFor<T2>() where T2 : class;
     }
 
 }

@@ -7,7 +7,7 @@ namespace BLM.EF7.Tests
     {
         public FakeDbContext(DbContextOptions options) : base(options)
         {
-
+            
         }
 
         /// <summary>

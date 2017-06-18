@@ -57,7 +57,8 @@ namespace BLM.EF7.Tests
             await _repo.RemoveAsync(_identity, Entity1);
             await _repo.SaveChangesAsync(_identity);
 
-            Assert.AreEqual(1, _repo.Entities(_identity).Count());
+            //Assert.AreEqual(1, _repo.Entities(_identity).Count());
+            Assert.AreEqual(1, _repo.Entities(_identity).ToList().Count());
             Assert.AreEqual(1, EfChangeListener.RemovedEntities.Count);
             // The LogicalDeleting mock entity should just modified
             Assert.AreEqual(false, EfChangeListener.WasOnModifiedCalled);
@@ -90,15 +91,19 @@ namespace BLM.EF7.Tests
                 await localRepository.SaveChangesAsync(_identity);
 
                 Assert.AreEqual(2, EfChangeListener.CreatedEntities.Count);
-                Assert.AreEqual(2, (await localRepository.EntitiesAsync(_identity)).Count());
+                //Assert.AreEqual(2, (await localRepository.EntitiesAsync(_identity)).Count());
+                Assert.AreEqual(2, (await localRepository.EntitiesAsync(_identity)).ToList().Count());
 
                 await localRepository.RemoveAsync(_identity, Entity2);
                 await localRepository.SaveChangesAsync(_identity);
 
-                Assert.AreEqual(2, (await localRepository.EntitiesAsync(_identity)).Count());
+                //Assert.AreEqual(2, (await localRepository.EntitiesAsync(_identity)).Count());
+                Assert.AreEqual(2, (await localRepository.EntitiesAsync(_identity)).ToList().Count());
                 var entities = (await localRepository.EntitiesAsync(_identity)).ToArray();
-                Assert.AreEqual(1, (await localRepository.EntitiesAsync(_identity)).Count(entity => entity.IsDeleted && entity.Id == Entity2.Id));
-                Assert.AreEqual(1, (await localRepository.EntitiesAsync(_identity)).Count(entity => !entity.IsDeleted && entity.Id == Entity3.Id));
+                //Assert.AreEqual(1, (await localRepository.EntitiesAsync(_identity)).Count(entity => entity.IsDeleted && entity.Id == Entity2.Id));
+                Assert.AreEqual(1, (await localRepository.EntitiesAsync(_identity)).Where(entity => entity.IsDeleted && entity.Id == Entity2.Id).ToList().Count());
+                //Assert.AreEqual(1, (await localRepository.EntitiesAsync(_identity)).Count(entity => !entity.IsDeleted && entity.Id == Entity3.Id));
+                Assert.AreEqual(1, (await localRepository.EntitiesAsync(_identity)).Where(entity => !entity.IsDeleted && entity.Id == Entity3.Id).ToList().Count());
                 Assert.AreEqual(1, EfChangeListener.RemovedEntities.Count);
                 Assert.AreEqual(0, EfChangeListener.ModifiedNewEntities.Count);
                 Assert.AreEqual(0, EfChangeListener.ModifiedOriginalEntities.Count);

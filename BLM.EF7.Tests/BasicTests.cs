@@ -161,18 +161,12 @@ namespace BLM.EF7.Tests
         [TestMethod]
         public virtual async Task AuthorizeCollection()
         {
-            try
-            {
-                await _repo.AddRangeAsync(_identity, new List<MockEntity>() { ValidEntity, InvisibleEntity, InvisibleEntity2 });
-                await _repo.SaveChangesAsync(_identity);
-                var authorizationResult = (await _repo.EntitiesAsync(_identity));
-                var queryResult = authorizationResult.All(a => a.IsVisible && a.IsVisible2);
-                Assert.IsTrue(queryResult);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await _repo.AddRangeAsync(_identity, new List<MockEntity>() { ValidEntity, InvisibleEntity, InvisibleEntity2 });
+            await _repo.SaveChangesAsync(_identity);
+            var authorizationResult = (await _repo.EntitiesAsync(_identity));
+            var queryResult = authorizationResult.Where(a => a.IsVisible && a.IsVisible2).ToList().Any();
+            //var queryResult = authorizationResult.All(a => a.IsVisible && a.IsVisible2);
+            Assert.IsTrue(queryResult);
         }
 
 
@@ -184,7 +178,9 @@ namespace BLM.EF7.Tests
             _db.Set<MockEntity>().AddRange(new List<MockEntity>() { ValidEntity, InvalidEntity, InvisibleEntity, InvisibleEntity2 });
             await _db.SaveChangesAsync();
 
-            Assert.IsTrue((await ctx.GetAuthorizedEntitySetAsync<MockEntity>()).All(a => a.IsVisible && a.IsVisible2));
+            //Assert.IsTrue((await ctx.GetAuthorizedEntitySetAsync<MockEntity>()).All(a => a.IsVisible && a.IsVisible2));
+            Assert.IsTrue((await ctx.GetAuthorizedEntitySetAsync<MockEntity>()).Where(a => a.IsVisible && a.IsVisible2).ToList().Any());
+
         }
 
         [TestMethod]

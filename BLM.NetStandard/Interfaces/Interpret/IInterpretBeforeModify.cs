@@ -1,6 +1,6 @@
 ﻿namespace BLM.NetStandard.Interfaces.Interpret
 {
-    internal interface IInterpretBeforeModify : IBlmEntry
+    public interface IInterpretBeforeModify : IBlmEntry
     {
         /// <summary>
         /// Possibility to interpret an entity on modification before saving into the DB
@@ -12,7 +12,7 @@
         object DoInterpret(object originalEntity, object modifiedEntity, IContextInfo context);
     }
 
-    internal interface IInterpretBeforeModify<in TInput, out TOutput> : IInterpretBeforeModify
+    public interface IInterpretBeforeModify<in TInput, out TOutput> : IInterpretBeforeModify
     {
         /// <summary>
         /// Possibility to interpret an entity on modification before saving into the DB
