@@ -15,7 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BLM.EF7\BLM.EF7.csproj" />
     <ProjectReference Include="..\BLM.NetStandard.Tests\BLM.NetStandard.Tests.csproj" />
-    <ProjectReference Include="..\BLM.NetStandard\BLM.NetStandard.csproj" />
   </ItemGroup>
 
   <ItemGroup>
