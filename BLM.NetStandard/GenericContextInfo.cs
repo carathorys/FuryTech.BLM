@@ -8,12 +8,15 @@ namespace BLM.NetStandard
 {
     public class GenericContextInfo : IContextInfo
     {
-        public GenericContextInfo(IIdentity identity)
+        public GenericContextInfo(IPrincipal principal)
         {
-            Identity = identity;
+            Principal = principal;
         }
 
         public IIdentity Identity { get; }
+
+        public IPrincipal Principal { get; }
+
         public IQueryable<T> GetFullEntitySet<T>() where T : class
         {
             throw new NotImplementedException();

@@ -19,7 +19,7 @@ namespace BLM.EF7.Tests
         protected EfRepository<MockEntity> _repo;
         protected EfRepository<MockNestedEntity> _repoNested;
         protected EfRepository<MockInterpretedEntity> _repoInterpreted;
-        protected IIdentity _identity;
+        protected IPrincipal _identity;
         
         // Needed to proper DB name generation
         public TestContext TestContext { get; set; }
@@ -38,7 +38,7 @@ namespace BLM.EF7.Tests
             _repo = new EfRepository<MockEntity>(_db);
             _repoNested = new EfRepository<MockNestedEntity>(_db);
             _repoInterpreted = new EfRepository<MockInterpretedEntity>(_db);
-            _identity = new GenericIdentity("gallayb");
+            _identity = new GenericPrincipal(new GenericIdentity("gallayb"), new string[] { "User" });
 
             EfChangeListener.Reset();
             Entity1 = new MockEntity()

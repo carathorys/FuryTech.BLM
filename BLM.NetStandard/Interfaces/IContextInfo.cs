@@ -7,9 +7,9 @@ namespace BLM.NetStandard.Interfaces
     public interface IContextInfo
     {
         /// <summary>
-        /// The user identity
+        /// The user principal
         /// </summary>
-        IIdentity Identity { get; }
+        IPrincipal Principal { get; }
 
         /// <summary>
         /// Get full the full queryable entity set

@@ -39,9 +39,9 @@ namespace BLM.EF7
             // TODO: What about the inherited classes? 
         }
 
-        private EfContextInfo GetContextInfo(IIdentity user)
+        private EfContextInfo GetContextInfo(IPrincipal userPrincipal)
         {
-            return new EfContextInfo(user, _dbcontext);
+            return new EfContextInfo(userPrincipal, _dbcontext);
         }
 
         private IEfRepository GetChildRepositoryFor(EntityEntry entry)
@@ -85,24 +85,24 @@ namespace BLM.EF7
         }
         #endregion
 
-        private async Task<AuthorizationResult> AuthorizeAddAsync(IIdentity usr, T newEntity)
+        private async Task<AuthorizationResult> AuthorizeAddAsync(IPrincipal usrPrinc, T newEntity)
         {
-            var authResult = (await Authorize.CreateAsync(newEntity, GetContextInfo(usr))).CreateAggregateResult();
+            var authResult = (await Authorize.CreateAsync(newEntity, GetContextInfo(usrPrinc))).CreateAggregateResult();
             if (!authResult.HasSucceed)
             {
-                await Listen.CreateFailedAsync(newEntity, GetContextInfo(usr));
+                await Listen.CreateFailedAsync(newEntity, GetContextInfo(usrPrinc));
                 _dbcontext.Entry(newEntity).State = EntityState.Detached;
             }
 
             return authResult;
         }
 
-        public void Add(IIdentity user, T newItem)
+        public void Add(IPrincipal userPrincipal, T newItem)
         {
-            AddAsync(user, newItem).Wait();
+            AddAsync(userPrincipal, newItem).Wait();
         }
 
-        public async Task AddAsync(IIdentity user, T newItem)
+        public async Task AddAsync(IPrincipal userPrincipal, T newItem)
         {
             await Task.Factory.StartNew(() =>
             {
@@ -110,12 +110,12 @@ namespace BLM.EF7
             });
         }
 
-        public void AddRange(IIdentity user, IEnumerable<T> newItems)
+        public void AddRange(IPrincipal userPrincipal, IEnumerable<T> newItems)
         {
-            AddRangeAsync(user, newItems).Wait();
+            AddRangeAsync(userPrincipal, newItems).Wait();
         }
 
-        public async Task AddRangeAsync(IIdentity user, IEnumerable<T> newItems)
+        public async Task AddRangeAsync(IPrincipal userPrincipal, IEnumerable<T> newItems)
         {
             await Task.Factory.StartNew(() =>
             {
@@ -136,23 +136,23 @@ namespace BLM.EF7
             }
         }
 
-        public IQueryable<T> Entities(IIdentity user)
+        public IQueryable<T> Entities(IPrincipal userPrincipal)
         {
-            return Authorize.Collection(_dbset, GetContextInfo(user));
+            return Authorize.Collection(_dbset, GetContextInfo(userPrincipal));
         }
 
-        public async Task<IQueryable<T>> EntitiesAsync(IIdentity user)
+        public async Task<IQueryable<T>> EntitiesAsync(IPrincipal userPrincipal)
         {
-            var result = await Authorize.CollectionAsync(_dbset, GetContextInfo(user));
+            var result = await Authorize.CollectionAsync(_dbset, GetContextInfo(userPrincipal));
             return result as IQueryable<T>;
         }
 
-        public void Remove(IIdentity usr, T item)
+        public void Remove(IPrincipal userPrincipal, T item)
         {
-            RemoveAsync(usr, item).Wait();
+            RemoveAsync(userPrincipal, item).Wait();
         }
 
-        public async Task RemoveAsync(IIdentity user, T item)
+        public async Task RemoveAsync(IPrincipal userPrincipal, T item)
         {
             await Task.Factory.StartNew(() =>
             {
@@ -160,12 +160,12 @@ namespace BLM.EF7
             });
         }
 
-        public void RemoveRange(IIdentity usr, IEnumerable<T> items)
+        public void RemoveRange(IPrincipal userPrincipal, IEnumerable<T> items)
         {
-            RemoveRangeAsync(usr, items).Wait();
+            RemoveRangeAsync(userPrincipal, items).Wait();
         }
 
-        public async Task RemoveRangeAsync(IIdentity user, IEnumerable<T> items)
+        public async Task RemoveRangeAsync(IPrincipal userPrincipal, IEnumerable<T> items)
         {
             await Task.Factory.StartNew(() =>
             {
@@ -173,12 +173,12 @@ namespace BLM.EF7
             });
         }
 
-        private AuthorizationResult AuthorizeEntityChange(IIdentity user, EntityEntry ent)
+        private AuthorizationResult AuthorizeEntityChange(IPrincipal userPrincipal, EntityEntry ent)
         {
-            return AuthorizeEntityChangeAsync(user, ent).Result;
+            return AuthorizeEntityChangeAsync(userPrincipal, ent).Result;
         }
 
-        public async Task<AuthorizationResult> AuthorizeEntityChangeAsync(IIdentity user, EntityEntry ent)
+        public async Task<AuthorizationResult> AuthorizeEntityChangeAsync(IPrincipal userPrincipal, EntityEntry ent)
         {
 
             if (ent.State == EntityState.Unchanged || ent.State == EntityState.Detached)
@@ -189,27 +189,27 @@ namespace BLM.EF7
                 switch (ent.State)
                 {
                     case EntityState.Added:
-                        T interpreted = Interpret.BeforeCreate(ent.Entity as T, GetContextInfo(user));
-                        return (await Authorize.CreateAsync(interpreted, GetContextInfo(user))).CreateAggregateResult();
+                        T interpreted = Interpret.BeforeCreate(ent.Entity as T, GetContextInfo(userPrincipal));
+                        return (await Authorize.CreateAsync(interpreted, GetContextInfo(userPrincipal))).CreateAggregateResult();
 
                     case EntityState.Modified:
                         var original = CreateWithValues(ent.OriginalValues);
                         var modified = CreateWithValues(ent.CurrentValues);
-                        var modifiedInterpreted = Interpret.BeforeModify((T)original, (T)modified, GetContextInfo(user));
+                        var modifiedInterpreted = Interpret.BeforeModify((T)original, (T)modified, GetContextInfo(userPrincipal));
                         foreach (var property in ent.CurrentValues.Properties)
                         {
                             ent.CurrentValues[property.Name] = modifiedInterpreted.GetType().GetProperty(property.Name)?.GetValue(modifiedInterpreted, null);
                         }
-                        return (await Authorize.ModifyAsync((T)original, (T)modifiedInterpreted, GetContextInfo(user))).CreateAggregateResult();
+                        return (await Authorize.ModifyAsync((T)original, (T)modifiedInterpreted, GetContextInfo(userPrincipal))).CreateAggregateResult();
                     case EntityState.Deleted:
-                        return (await Authorize.RemoveAsync((T)CreateWithValues(ent.OriginalValues, ent.Entity.GetType()), GetContextInfo(user))).CreateAggregateResult();
+                        return (await Authorize.RemoveAsync((T)CreateWithValues(ent.OriginalValues, ent.Entity.GetType()), GetContextInfo(userPrincipal))).CreateAggregateResult();
                     default:
                         return AuthorizationResult.Fail("The entity state is invalid", ent.Entity);
                 }
             }
             else
             {
-                return await GetChildRepositoryFor(ent).AuthorizeEntityChangeAsync(user, ent);
+                return await GetChildRepositoryFor(ent).AuthorizeEntityChangeAsync(userPrincipal, ent);
             }
         }
 
@@ -243,12 +243,12 @@ namespace BLM.EF7
             }
         }
 
-        public void SaveChanges(IIdentity user)
+        public void SaveChanges(IPrincipal user)
         {
             SaveChangesAsync(user).Wait();
         }
 
-        public async Task SaveChangesAsync(IIdentity user)
+        public async Task SaveChangesAsync(IPrincipal user)
         {
             var contextInfo = GetContextInfo(user);
 

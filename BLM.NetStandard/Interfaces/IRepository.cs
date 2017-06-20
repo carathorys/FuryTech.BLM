@@ -9,8 +9,8 @@ namespace BLM.NetStandard.Interfaces
 
     public interface IRepository
     {
-        void SaveChanges(IIdentity user);
-        Task SaveChangesAsync(IIdentity user);
+        void SaveChanges(IPrincipal userPrincipal);
+        Task SaveChangesAsync(IPrincipal userPrincipal);
     }
 
     public interface IRepository<T> : IRepository<T, T> where T : class
@@ -20,16 +20,16 @@ namespace BLM.NetStandard.Interfaces
 
     public interface IRepository<in TInput, TOutput> : IDisposable, IRepository where TInput : class where TOutput : class
     {
-        IQueryable<TOutput> Entities(IIdentity user);
-        Task<IQueryable<TOutput>> EntitiesAsync(IIdentity user);
-        void Add(IIdentity user, TInput newItem);
-        Task AddAsync(IIdentity user, TInput newItem);
-        void AddRange(IIdentity user, IEnumerable<TInput> newItems);
-        Task AddRangeAsync(IIdentity user, IEnumerable<TInput> newItems);
-        void Remove(IIdentity usr, TInput item);
-        Task RemoveAsync(IIdentity usr, TInput item);
-        void RemoveRange(IIdentity usr, IEnumerable<TInput> items);
-        Task RemoveRangeAsync(IIdentity usr, IEnumerable<TInput> items);
+        IQueryable<TOutput> Entities(IPrincipal userPrincipal);
+        Task<IQueryable<TOutput>> EntitiesAsync(IPrincipal userPrincipal);
+        void Add(IPrincipal userPrincipal, TInput newItem);
+        Task AddAsync(IPrincipal userPrincipal, TInput newItem);
+        void AddRange(IPrincipal userPrincipal, IEnumerable<TInput> newItems);
+        Task AddRangeAsync(IPrincipal userPrincipal, IEnumerable<TInput> newItems);
+        void Remove(IPrincipal usr, TInput item);
+        Task RemoveAsync(IPrincipal usr, TInput item);
+        void RemoveRange(IPrincipal usr, IEnumerable<TInput> items);
+        Task RemoveRangeAsync(IPrincipal usr, IEnumerable<TInput> items);
         IRepository<T2> GetChildRepositoryFor<T2>() where T2 : class;
     }
 
