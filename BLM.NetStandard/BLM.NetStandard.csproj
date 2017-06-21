@@ -1,18 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>FuryTechs.BLM.NetStandard</PackageId>
     <Authors>FuryTechs.BLM.NetStandard</Authors>
     <Company>FuryTechs</Company>
-    <Description>FuryTechs Business Layer Management tools for .NET Standard 2</Description>
+    <Description>FuryTechs Business Layer Management tools for .NET Standard 2 and Microsoft .NET 4.6</Description>
     <Product>FuryTechs.BLM.NetStandard</Product>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
-    <Version>2.0.5-preview</Version>
+    <Version>2.0.7-preview</Version>
+    <PackageReleaseNotes>Targeting multiple frameworks (NetStandard2.0,net46)</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>

@@ -8,11 +8,6 @@ using BLM.NetStandard.Interfaces.Listen;
 using BLM.NetStandard;
 using System.Security.Principal;
 
-#pragma warning disable 1998
-#pragma warning disable IDE1006 // Naming Styles
-// ReSharper disable UnusedMember.Global
-// ReSharper disable StaticMemberInGenericType
-
 namespace BLM.NetStandard.Tests
 {
     #region GENERIC Listener
@@ -328,5 +323,3 @@ namespace BLM.NetStandard.Tests
         }
     }
 }
-// ReSharper restore UnusedMember.Global
-// ReSharper restore StaticMemberInGenericType
