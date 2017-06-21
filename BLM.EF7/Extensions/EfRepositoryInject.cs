@@ -1,46 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace BLM.EF7.Extensions
 {
     public static class EfRepositoryInject
     {
-        public static void AddAllBLMRepositories<TDbContext>(this IServiceCollection s) where TDbContext : DbContext
+        public static void AddAllBLMRepositories<TDbContext>(this IServiceCollection s, bool disposeDbContextOnDispose = true) where TDbContext : DbContext
         {
+            var ctxType = typeof(TDbContext);
             var efType = typeof(EfRepository<>);
-            var dummyService = new { dummy = true };
-            TDbContext dbContext = null;
-
-            foreach (var srv in s)
+            var props = ctxType.GetProperties();
+            Parallel.ForEach(props, prop =>
             {
-                if (srv.ImplementationType == typeof(TDbContext))
+                if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
                 {
-                    dbContext = (TDbContext)srv.ImplementationInstance;
-                    break;
-                }
-            }
+                    var args = prop.PropertyType.GetGenericArguments()[0];
+                    var genericType = efType.MakeGenericType(args);
 
-            if (dbContext != null)
-            {
-                foreach (var t in dbContext.Model.GetEntityTypes())
-                {
-                    var type = t.ClrType;
-                    var genericType = efType.MakeGenericType(type);
-                    s.AddTransient(factory => Activator.CreateInstance(genericType, factory.GetService<TDbContext>()));
+                    s.AddScoped(genericType, f =>
+                    {
+                        var dbContext = f.GetService<TDbContext>();
+                        return Activator.CreateInstance(genericType, dbContext, disposeDbContextOnDispose);
+                    });
                 }
-            }
-        }
-        public static void AddBLMRepository<TDbContext, TEntity>(this IServiceCollection s)
-            where TDbContext : DbContext
-            where TEntity : class, new()
-        {
-            s.AddTransient(typeof(EfRepository<TEntity>), f =>
-            {
-                var context = f.GetService<TDbContext>();
-                return new EfRepository<TEntity>(context);
             });
         }
     }
